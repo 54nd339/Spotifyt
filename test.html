@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <video id="my-video" src="https://firebasestorage.googleapis.com/v0/b/flipr-spotify.appspot.com/o/gp6b0ridpzr81.mp4?alt=media&token=296c8cfe-0c7b-4b66-bfee-aefeed0d3232"></video>
+    <button id="play-button">Play</button>
+    <script>
+        var video = document.getElementById("my-video");
+        var playButton = document.getElementById("play-button");
+
+        playButton.addEventListener("click", () => {
+        if (video.paused) {
+            video.play();
+            playButton.innerHTML = "Pause";
+        } else {
+            video.pause();
+            playButton.innerHTML = "Play";
+        }
+        });
+    </script>
+</body>
