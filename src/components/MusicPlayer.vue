@@ -30,22 +30,22 @@ onMounted(() => {
     }
 
     if (currentTrack.value) { 
-        seeker.value.addEventListener("change", function () {
+        seeker.value.addEventListener("change", () => {
             const time = audio.value.duration * (seeker.value.value / 100);
             audio.value.currentTime = time;
         });
 
-        seeker.value.addEventListener("mousedown", function () {
+        seeker.value.addEventListener("mousedown", () => {
             audio.value.pause();
             isPlaying.value = false
         });
 
-        seeker.value.addEventListener("mouseup", function () {
+        seeker.value.addEventListener("mouseup", () => {
             audio.value.play();
             isPlaying.value = true
         });
 
-        seekerContainer.value.addEventListener("click", function (e) {
+        seekerContainer.value.addEventListener("click", (e) => {
             const clickPosition = (e.pageX - seekerContainer.value.offsetLeft) / seekerContainer.value.offsetWidth;
             const time = audio.value.duration * clickPosition;
             audio.value.currentTime = time;
@@ -55,7 +55,7 @@ onMounted(() => {
 })
 
 const timeupdate = () => {
-    audio.value.addEventListener("timeupdate", function () {
+    audio.value.addEventListener("timeupdate", () => {
         var minutes = Math.floor(audio.value.currentTime / 60);
         var seconds = Math.floor(audio.value.currentTime - minutes * 60);
         isTrackTimeCurrent.value = minutes+':'+seconds.toString().padStart(2, '0')
@@ -66,7 +66,7 @@ const timeupdate = () => {
 }
 
 const loadmetadata = () => {
-    audio.value.addEventListener('loadedmetadata', function() {
+    audio.value.addEventListener('loadedmetadata', () => {
         const duration = audio.value.duration;
         const minutes = Math.floor(duration / 60);
         const seconds = Math.floor(duration % 60);

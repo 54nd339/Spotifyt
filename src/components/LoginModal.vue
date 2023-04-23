@@ -54,6 +54,7 @@
 <script setup>
 import { ref, defineEmits } from "vue" 
 import useAuth from "@/db/useAuth"
+import addCollection from "@/db/addDocument"
 
 const emit = defineEmits(['close'])
 const username = ref('')
@@ -62,7 +63,7 @@ const password = ref('')
 const formType = ref('login')
 const error = ref('')
 
-const handleSubmit = () => {
+const handleSubmit = async() => {
 
   // validate username
   username.value = username.value.trim()
@@ -90,7 +91,7 @@ const handleSubmit = () => {
   }
 
   if (formType.value === 'login') {
-    useAuth().login(email.value, password.value)
+    await useAuth().login(email.value, password.value)
       .then((res) => {
         emit('close', res.displayName)
       })
@@ -98,9 +99,20 @@ const handleSubmit = () => {
         error.value = err.message
       })
   } else {
-    useAuth().signup(email.value, password.value, username.value)
-      .then((res) => {
-        emit('close', res.displayName)
+    await useAuth().signup(email.value, password.value, username.value)
+      .then(async(res) => {
+        await (await addCollection('users'))
+        .addDocument(res.uid, {
+          name: username.value,
+          email: email.value,
+          createdAt: new Date(),
+          favs: [],
+          created: []
+        }).then(() => {
+          emit('close', res.displayName)
+        }).catch(err => {
+          error.value = err.message
+        })
       })
       .catch(err => {
         error.value = err.message
