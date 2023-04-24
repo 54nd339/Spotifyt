@@ -202,7 +202,7 @@ const uploadSong = async() => {
         date: fileRef.snapshot.metadata.timeCreated
       }
 
-      await (await addCollection('songs')).addDocument('', newSong).then((uid) => {
+      await (await addCollection('podcasts')).addDocument('', newSong).then((uid) => {
         songname.value = ''
         artist.value = ''
         album.value = ''

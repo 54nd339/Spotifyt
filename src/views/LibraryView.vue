@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue'
 import SongRow from '../components/SongRow.vue'
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
@@ -19,6 +20,20 @@ const playFunc = () => {
     } 
     useSong.playFromFirst()
 }
+
+import getCollection from '@/db/getCollection'
+const loadData = async () => {
+    await (await getCollection('podcasts'))
+    .getDocuments().then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+}
+
+onMounted(() => {
+    loadData()
+})
 </script>
 
 <template>
