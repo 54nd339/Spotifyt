@@ -4,10 +4,10 @@ import Heart from 'vue-material-design-icons/Heart.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 
-import { useVideoStore } from '../stores/video'
+import { useVideoStore } from '../stores/'
 import { storeToRefs } from 'pinia';
 const useVideo = useVideoStore()
-const { isPlaying, currentTrack } = storeToRefs(useSong)
+const { isVideoPlaying, currentVideoTrack } = storeToRefs(useVideo)
 
 let isHover = ref(false)
 let isTrackTime = ref(null)
@@ -21,9 +21,10 @@ const props = defineProps({
 const { track, artist, index } = toRefs(props)
 
 onMounted(() => {
-    const audio = new Audio(track.value.url);
-    audio.addEventListener('loadedmetadata', () => {
-        const duration = audio.duration;
+    const video = document.createElement('video');
+    video.src = track.value.url;
+    video.addEventListener('loadedmetadata', () => {
+        const duration = video.duration;
         const minutes = Math.floor(duration / 60);
         const seconds = Math.floor(duration % 60);
         isTrackTime.value = minutes+':'+seconds.toString().padStart(2, '0')
@@ -40,28 +41,28 @@ onMounted(() => {
         <div class="flex items-center w-full py-1.5">
             <div v-if="isHover" class="w-[40px] ml-[14px] mr-[6px] cursor-pointer">
                 <Play
-                    v-if="!isPlaying"
+                    v-if="!isVideoPlaying"
                     fillColor="#FFFFFF"
                     :size="25"
-                    @click="useSong.playOrPauseThisSong(artist, track)"
+                    @click="useVideo.playOrPauseThisSong(artist, track)"
                 />
                 <Play
-                    v-else-if="isPlaying && currentTrack.name !== track.name"
+                    v-else-if="isVideoPlaying && currentVideoTrack.name !== track.name"
                     fillColor="#FFFFFF"
                     :size="25"
-                    @click="useSong.loadSong(artist, track)"
+                    @click="useVideo.loadSong(artist, track)"
                 />
 
-                <Pause v-else fillColor="#FFFFFF" :size="25" @click="useSong.playOrPauseSong()"/>
+                <Pause v-else fillColor="#FFFFFF" :size="25" @click="useVideo.playOrPauseVideo()"/>
             </div>
             <div v-else class="text-white font-semibold w-[40px] ml-5">
-                <span :class="{'text-green-500': currentTrack && currentTrack.name === track.name}">
+                <span :class="{'text-green-500': currentVideoTrack && currentVideoTrack.name === track.name}">
                     {{ index }}
                 </span>
             </div>
             <div>
                 <div
-                    :class="{'text-green-500': currentTrack && currentTrack.name === track.name}"
+                    :class="{'text-green-500': currentVideoTrack && currentVideoTrack.name === track.name}"
                     class="text-white font-semibold"
                 >
                     {{ track.name }}

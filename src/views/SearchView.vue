@@ -3,7 +3,7 @@ import CategorySelect from '../components/CategorySelect.vue';
 import algoliasearch from 'algoliasearch/lite';
 import 'instantsearch.css/themes/satellite-min.css';
 
-import { useSongStore } from '../stores/song'
+import { useSongStore } from '../stores/'
 import { storeToRefs } from 'pinia';
 import getCollection from '@/db/getCollection'
 

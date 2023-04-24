@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import PlayerVolume from '../components/PlayerVolume.vue'
+import PlayerVolume from './PlayerVolume.vue'
 import Heart from 'vue-material-design-icons/Heart.vue';
 import PictureInPictureBottomRight from 'vue-material-design-icons/PictureInPictureBottomRight.vue';
 import Play from 'vue-material-design-icons/Play.vue';
@@ -8,10 +8,10 @@ import Pause from 'vue-material-design-icons/Pause.vue';
 import SkipBackward from 'vue-material-design-icons/SkipBackward.vue';
 import SkipForward from 'vue-material-design-icons/SkipForward.vue';
 
-import { useSongStore } from '../stores/'
+import { useVideoStore } from '../stores/'
 import { storeToRefs } from 'pinia';
-const useSong = useSongStore()
-const { isAudioPlaying, audio, currentList, currentAudioTrack } = storeToRefs(useSong)
+const useSong = useVideoStore()
+const { isVideoPlaying, video, currentList, currentVideoTrack } = storeToRefs(useSong)
 
 let isHover = ref(false)
 let isTrackTimeCurrent = ref(null)
@@ -22,66 +22,66 @@ let range = ref(0)
 
 onMounted(() => {
 
-    if (audio.value) {
+    if (video.value) {
         setTimeout(() => {
             timeupdate()
             loadmetadata()
         }, 300)
     }
 
-    if (currentAudioTrack.value) { 
+    if (currentVideoTrack.value) { 
         seeker.value.addEventListener("change", () => {
-            const time = audio.value.duration * (seeker.value.value / 100);
-            audio.value.currentTime = time;
+            const time = video.value.duration * (seeker.value.value / 100);
+            video.value.currentTime = time;
         });
 
         seeker.value.addEventListener("mousedown", () => {
-            audio.value.pause();
-            isAudioPlaying.value = false
+            video.value.pause();
+            isVideoPlaying.value = false
         });
 
         seeker.value.addEventListener("mouseup", () => {
-            audio.value.play();
-            isAudioPlaying.value = true
+            video.value.play();
+            isVideoPlaying.value = true
         });
 
         seekerContainer.value.addEventListener("click", (e) => {
             const clickPosition = (e.pageX - seekerContainer.value.offsetLeft) / seekerContainer.value.offsetWidth;
-            const time = audio.value.duration * clickPosition;
-            audio.value.currentTime = time;
-            seeker.value.value = (100 / audio.value.duration) * audio.value.currentTime;
+            const time = video.value.duration * clickPosition;
+            video.value.currentTime = time;
+            seeker.value.value = (100 / video.value.duration) * video.value.currentTime;
         });
     }
 })
 
 const timeupdate = () => {
-    audio.value.addEventListener("timeupdate", () => {
-        var minutes = Math.floor(audio.value.currentTime / 60);
-        var seconds = Math.floor(audio.value.currentTime - minutes * 60);
+    video.value.addEventListener("timeupdate", () => {
+        var minutes = Math.floor(video.value.currentTime / 60);
+        var seconds = Math.floor(video.value.currentTime - minutes * 60);
         isTrackTimeCurrent.value = minutes+':'+seconds.toString().padStart(2, '0')
-        const value = (100 / audio.value.duration) * audio.value.currentTime;
+        const value = (100 / video.value.duration) * video.value.currentTime;
         range.value = value
         seeker.value.value = value;
     });
 }
 
 const loadmetadata = () => {
-    audio.value.addEventListener('loadedmetadata', () => {
-        const duration = audio.value.duration;
+    video.value.addEventListener('loadedmetadata', () => {
+        const duration = video.value.duration;
         const minutes = Math.floor(duration / 60);
         const seconds = Math.floor(duration % 60);
         isTrackTimeTotal.value = minutes+':'+seconds.toString().padStart(2, '0')
     });
 }
 
-watch(() => audio.value, () => {
+watch(() => video.value, () => {
     timeupdate()
     loadmetadata()
 })
 
 watch(() => isTrackTimeCurrent.value, (time) => {
     if (time && time == isTrackTimeTotal.value) {
-        useSong.nextSong(currentAudioTrack.value)
+        useSong.nextSong(currentVideoTrack.value)
     }
 })
 
@@ -90,7 +90,7 @@ watch(() => isTrackTimeCurrent.value, (time) => {
 <template>
     <div
         id="MusicPlayer"
-        v-if="audio"
+        v-if="video"
         class="
             fixed
             flex
@@ -110,7 +110,7 @@ watch(() => isTrackTimeCurrent.value, (time) => {
                 <img class="rounded-sm shadow-2xl" width="55" :src="currentList.albumCover">
                 <div class="ml-4">
                     <div class="text-[14px] text-white hover:underline cursor-pointer">
-                        {{ currentAudioTrack.name }}
+                        {{ currentVideoTrack.name }}
                     </div>
                     <div class="text-[11px] text-gray-500 hover:underline hover:text-white cursor-pointer">
                         {{ currentList.name }}
@@ -127,14 +127,14 @@ watch(() => isTrackTimeCurrent.value, (time) => {
             <div class="flex-col items-center justify-center">
                 <div class="buttons flex items-center justify-center h-[30px]">
                     <button class="mx-2">
-                        <SkipBackward fillColor="#FFFFFF" :size="25" @click="useSong.prevSong(currentAudioTrack)"/>
+                        <SkipBackward fillColor="#FFFFFF" :size="25" @click="useSong.prevSong(currentVideoTrack)"/>
                     </button>
-                    <button class="p-1 rounded-full mx-3 bg-white" @click="useSong.playOrPauseThisSong(currentList, currentAudioTrack)">
-                        <Play v-if="!isAudioPlaying" fillColor="#181818" :size="25" />
+                    <button class="p-1 rounded-full mx-3 bg-white" @click="useSong.playOrPauseThisSong(currentList, currentVideoTrack)">
+                        <Play v-if="!isVideoPlaying" fillColor="#181818" :size="25" />
                         <Pause v-else fillColor="#181818" :size="25" />
                     </button>
                     <button class="mx-2">
-                        <SkipForward fillColor="#FFFFFF" :size="25" @click="useSong.nextSong(currentAudioTrack)"/>
+                        <SkipForward fillColor="#FFFFFF" :size="25" @click="useSong.nextSong(currentVideoTrack)"/>
                     </button>
                 </div>
 

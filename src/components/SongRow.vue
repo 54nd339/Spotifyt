@@ -4,10 +4,10 @@ import Heart from 'vue-material-design-icons/Heart.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 
-import { useSongStore } from '../stores/song'
+import { useSongStore } from '../stores/'
 import { storeToRefs } from 'pinia';
 const useSong = useSongStore()
-const { isPlaying, currentTrack } = storeToRefs(useSong)
+const { isAudioPlaying, currentAudioTrack } = storeToRefs(useSong)
 
 let isHover = ref(false)
 let isTrackTime = ref(null)
@@ -40,13 +40,13 @@ onMounted(() => {
         <div class="flex items-center w-full py-1.5">
             <div v-if="isHover" class="w-[40px] ml-[14px] mr-[6px] cursor-pointer">
                 <Play
-                    v-if="!isPlaying"
+                    v-if="!isAudioPlaying"
                     fillColor="#FFFFFF"
                     :size="25"
                     @click="useSong.playOrPauseThisSong(artist, track)"
                 />
                 <Play
-                    v-else-if="isPlaying && currentTrack.name !== track.name"
+                    v-else-if="isAudioPlaying && currentAudioTrack.name !== track.name"
                     fillColor="#FFFFFF"
                     :size="25"
                     @click="useSong.loadSong(artist, track)"
@@ -55,13 +55,13 @@ onMounted(() => {
                 <Pause v-else fillColor="#FFFFFF" :size="25" @click="useSong.playOrPauseSong()"/>
             </div>
             <div v-else class="text-white font-semibold w-[40px] ml-5">
-                <span :class="{'text-green-500': currentTrack && currentTrack.name === track.name}">
+                <span :class="{'text-green-500': currentAudioTrack && currentAudioTrack.name === track.name}">
                     {{ index }}
                 </span>
             </div>
             <div>
                 <div
-                    :class="{'text-green-500': currentTrack && currentTrack.name === track.name}"
+                    :class="{'text-green-500': currentAudioTrack && currentAudioTrack.name === track.name}"
                     class="text-white font-semibold"
                 >
                     {{ track.name }}

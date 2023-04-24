@@ -9,7 +9,7 @@ import Heart from 'vue-material-design-icons/Heart.vue';
 import ClockTimeThreeOutline from 'vue-material-design-icons/ClockTimeThreeOutline.vue';
 // import artist from '../songList.json'
 
-import { useSongStore } from '../stores/song'
+import { useSongStore } from '../stores/'
 import { storeToRefs } from 'pinia';
 const useSong = useSongStore()
 const { isPlaying, currentTrack, currentList } = storeToRefs(useSong)
@@ -118,11 +118,14 @@ loadData().then(() => {
         </div>
         <div class="border-b border-b-[#2A2A2A] mt-2"></div>
         <div class="mb-4"></div>
+        <h1 class="text-white text-xl font-semibold">Songs</h1>
         <ul class="w-full" v-for="track, index in artist.audio_tracks" :key="track">
             <SongRow :artist="artist" :track="track" :index="++index"/>
         </ul>
-        <ul class="w-full" v-for="track, index in artist.audio_tracks" :key="track">
-            <SongRow :artist="artist" :track="track" :index="++index"/>
+        <div class="mb-4"></div>
+        <h1 class="text-white text-xl font-semibold">Videos</h1>
+        <ul class="w-full" v-for="track, index in artist.video_tracks" :key="track">
+            <VideoRow :artist="artist" :track="track" :index="++index"/>
         </ul>
     </div>
 </template>
