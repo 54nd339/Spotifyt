@@ -6,6 +6,7 @@ import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
 import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
 import LoginModal from "./components/LoginModal.vue";
 import ConfirmModal from "./components/ConfirmModal.vue";
+import { auth } from "@/db/config"
 import useAuth from "@/db/useAuth"
 
 import { useSongStore } from "./stores/song";
@@ -13,16 +14,33 @@ import { storeToRefs } from "pinia";
 const useSong = useSongStore();
 const { isPlaying, currentTrack } = storeToRefs(useSong);
 
+const user = ref(auth.currentUser);
+const username = ref("");
+const uid = ref("");
+
+auth.onAuthStateChanged((param) => {
+  user.value = param;
+  if (param) {
+    username.value = param.displayName;
+    uid.value = param.uid;
+  } else {
+    username.value = "User";
+    uid.value = "";
+  }
+});
+
 onMounted(() => {
   isPlaying.value = false;
 });
 const openMenu = ref(false);
-const username = ref("User");
 const showModal = ref(false);
 
-const displayName = (name) => {
+const userDetail = (user) => {
   showModal.value = false;
-  username.value = name;
+  if(user){
+    username.value = user.displayName;
+    uid.value = user.uid;
+  }
 }
 
 const greeting = ref("Hello");
@@ -37,6 +55,10 @@ if (hour < 12) {
 }
 
 const showConfirmModal = ref(false);
+const closeConfirm = () => {
+  openMenu.value = false;
+  showConfirmModal.value = false
+}
 const logout = async() => {
   openMenu.value = false;
   await useAuth().logout().then(() => {
@@ -48,6 +70,7 @@ const logout = async() => {
 
 <template>
   <div>
+    <Suspense>
     <div
       id="TopNav"
       class="w-[calc(100%-240px)] h-[60px] fixed right-0 z-20 bg-[#101010] bg-opacity-80 flex items-center justify-between"
@@ -58,7 +81,7 @@ const logout = async() => {
         </h1>
       </div>
 
-      <button v-if="username=='User'" @click="showModal = true" class="bg-black hover:bg-[#1DB954] rounded-full p-0.5 mr-8 mt-0.5 cursor-pointer">
+      <button id="loginbtn" v-if="!user" @click="showModal = true" class="bg-black hover:bg-[#1DB954] rounded-full p-0.5 mr-8 mt-0.5 cursor-pointer">
         <div class="flex items-center">
           <div class="text-white text-[14px] mx-1 font-semibold">
             Login/Register
@@ -99,11 +122,14 @@ const logout = async() => {
         class="fixed w-[190px] bg-[#282828] shadow-2xl z-50 rounded-sm top-[52px] right-[35px] p-1 cursor-pointer"
       >
         <ul class="text-gray-200 font-semibold text-[14px]">
-          <li class="px-3 py-2.5 hover:bg-[#3E3D3D] border-b border-b-gray-600">Profile</li>
+            <RouterLink to="/profile" >
+              <li class="px-3 py-2.5 hover:bg-[#3E3D3D] border-b border-b-gray-600" @click="openMenu=false">Profile</li>
+            </RouterLink>
           <li class="px-3 py-2.5 hover:bg-[#3E3D3D]" @click="showConfirmModal = true">Logout</li>
         </ul>
       </span>
     </div>
+    </Suspense>
     
     <div id="SideNav" class="h-[100%] p-6 w-[240px] fixed z-50 bg-black">
       <RouterLink to="/">
@@ -129,7 +155,7 @@ const logout = async() => {
             pageUrl="/search"
           />
         </RouterLink>
-        <RouterLink to="/library">
+        <RouterLink to='/library'>
           <MenuItem
             class="ml-[2px]"
             :iconSize="23"
@@ -179,8 +205,8 @@ const logout = async() => {
     </div>
   </div>
 
-  <LoginModal v-if="showModal" @close="displayName" />
-  <ConfirmModal v-if="showConfirmModal" @close="showConfirmModal = false" @confirm="logout" />
+  <LoginModal v-if="showModal" @close="userDetail" />
+  <ConfirmModal v-if="showConfirmModal" @close="closeConfirm" @confirm="logout" />
 
   <div
     class="fixed right-0 top-0 w-[calc(100%-240px)] overflow-auto h-full bg-gradient-to-b from-[#1C1C1C] to-black"

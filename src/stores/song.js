@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
-import artist from '../artist.json'
+import list from '../songList.json'
 
 export const useSongStore = defineStore('song', {
   state: () => ({
     isPlaying: false,
     audio: null,
-    currentArtist: null,
+    currentList: null,
     currentTrack: null
   }),
   actions: {
-    loadSong(artist, track) {
-        this.currentArtist = artist
+    loadSong(list, track) {
+        this.currentList = list
         this.currentTrack = track
 
         if (this.audio && this.audio.src) {
@@ -38,9 +38,9 @@ export const useSongStore = defineStore('song', {
         }
     },
 
-    playOrPauseThisSong(artist, track) {
+    playOrPauseThisSong(list, track) {
         if (!this.audio || !this.audio.src || (this.currentTrack.id !== track.id)) {
-            this.loadSong(artist, track)
+            this.loadSong(list, track)
             return
         }
 
@@ -48,30 +48,30 @@ export const useSongStore = defineStore('song', {
     },
 
     prevSong(currentTrack) {
-        let track = artist.tracks[currentTrack.id - 2]
-        this.loadSong(artist, track)
+        let track = list.tracks[currentTrack.id - 2]
+        this.loadSong(list, track)
     },
 
     nextSong(currentTrack) {
-        if (currentTrack.id === artist.tracks.length) {
-            let track = artist.tracks[0]
-            this.loadSong(artist, track)
+        if (currentTrack.id === list.tracks.length) {
+            let track = list.tracks[0]
+            this.loadSong(list, track)
         } else {
-            let track = artist.tracks[currentTrack.id]
-            this.loadSong(artist, track)
+            let track = list.tracks[currentTrack.id]
+            this.loadSong(list, track)
         }
     },
 
     playFromFirst() {
         this.resetState()
-        let track = artist.tracks[0]
-        this.loadSong(artist, track)
+        let track = list.tracks[0]
+        this.loadSong(list, track)
     },
 
     resetState() {
         this.isPlaying = false
         this.audio = null
-        this.currentArtist = null
+        this.currentList = null
         this.currentTrack = null
     }
   },

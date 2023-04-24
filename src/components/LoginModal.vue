@@ -52,10 +52,12 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue" 
+import { ref } from "vue" 
+import { useRouter } from "vue-router"
 import useAuth from "@/db/useAuth"
 import addCollection from "@/db/addDocument"
 
+const router = useRouter()
 const emit = defineEmits(['close'])
 const username = ref('')
 const email = ref('')
@@ -93,7 +95,7 @@ const handleSubmit = async() => {
   if (formType.value === 'login') {
     await useAuth().login(email.value, password.value)
       .then((res) => {
-        emit('close', res.displayName)
+        emit('close', res)
       })
       .catch(err => {
         error.value = err.message
@@ -109,7 +111,7 @@ const handleSubmit = async() => {
           favs: [],
           created: []
         }).then(() => {
-          emit('close', res.displayName)
+          emit('close', res)
         }).catch(err => {
           error.value = err.message
         })

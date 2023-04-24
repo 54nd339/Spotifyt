@@ -11,7 +11,7 @@ import SkipForward from 'vue-material-design-icons/SkipForward.vue';
 import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
 const useSong = useSongStore()
-const { isPlaying, audio, currentTrack, currentArtist } = storeToRefs(useSong)
+const { isPlaying, audio, currentList, currentTrack } = storeToRefs(useSong)
 
 let isHover = ref(false)
 let isTrackTimeCurrent = ref(null)
@@ -107,13 +107,13 @@ watch(() => isTrackTimeCurrent.value, (time) => {
     >
         <div class="flex items-center w-1/4">
             <div class="flex items-center ml-4">
-                <img class="rounded-sm shadow-2xl" width="55" :src="currentArtist.albumCover">
+                <img class="rounded-sm shadow-2xl" width="55" :src="currentList.albumCover">
                 <div class="ml-4">
                     <div class="text-[14px] text-white hover:underline cursor-pointer">
                         {{ currentTrack.name }}
                     </div>
                     <div class="text-[11px] text-gray-500 hover:underline hover:text-white cursor-pointer">
-                        {{ currentArtist.name }}
+                        {{ currentList.name }}
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@ watch(() => isTrackTimeCurrent.value, (time) => {
                     <button class="mx-2">
                         <SkipBackward fillColor="#FFFFFF" :size="25" @click="useSong.prevSong(currentTrack)"/>
                     </button>
-                    <button class="p-1 rounded-full mx-3 bg-white" @click="useSong.playOrPauseThisSong(currentArtist, currentTrack)">
+                    <button class="p-1 rounded-full mx-3 bg-white" @click="useSong.playOrPauseThisSong(currentList, currentTrack)">
                         <Play v-if="!isPlaying" fillColor="#181818" :size="25" />
                         <Pause v-else fillColor="#181818" :size="25" />
                     </button>
