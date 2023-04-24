@@ -87,7 +87,7 @@
         <div class="mb-4">
           <button
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit" @click="uploadSong"
+            type="submit" @click="uploadSong" :disabled="UploadText === 'Uploading...'"
           >
             {{ UploadText }}
           </button>
@@ -199,7 +199,8 @@ const uploadSong = async() => {
         year: year.value,
         url: fileRef.url,
         path: fileRef.snapshot.metadata.fullPath,
-        date: fileRef.snapshot.metadata.timeCreated
+        date: fileRef.snapshot.metadata.timeCreated,
+        type: fileRef.snapshot.metadata.contentType.split("/")[0]
       }
 
       await (await addCollection('podcasts')).addDocument('', newSong).then((uid) => {

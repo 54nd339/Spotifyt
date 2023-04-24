@@ -1,12 +1,28 @@
 import { defineStore } from 'pinia'
-import list from '../songList.json'
+// import list from '../songList.json'
+
+import getCollection from '@/db/getCollection'
+let podcasts = []
+await (await getCollection('podcasts'))
+.getDocuments().then(res => {
+    podcasts = res
+}).catch(err => {
+    console.log(err)
+})
+let list = {
+    "name": "Diaries Of A Hero",
+    "albumCover": "/images/albumCovers/DiariesOfAHero.png",
+    "releaseYear": "2023",
+    "audio_tracks": podcasts.filter(podcast => podcast.type === 'audio'),
+    "video_tracks": podcasts.filter(podcast => podcast.type === 'video')
+}
 
 export const useSongStore = defineStore('song', {
   state: () => ({
     isPlaying: false,
     audio: null,
     currentList: null,
-    currentTrack: null
+    currentTrack: null,
   }),
   actions: {
     loadSong(list, track) {
@@ -20,7 +36,7 @@ export const useSongStore = defineStore('song', {
         }
 
         this.audio = new Audio()
-        this.audio.src = track.path
+        this.audio.src = track.url
 
         setTimeout(() => {
             this.isPlaying = true
@@ -48,23 +64,25 @@ export const useSongStore = defineStore('song', {
     },
 
     prevSong(currentTrack) {
-        let track = list.tracks[currentTrack.id - 2]
+        let index = list.audio_tracks.findIndex(track => track.id === currentTrack.id)
+        let track = list.audio_tracks[index - 1]
         this.loadSong(list, track)
     },
 
     nextSong(currentTrack) {
-        if (currentTrack.id === list.tracks.length) {
-            let track = list.tracks[0]
+        let index = list.audio_tracks.findIndex(track => track.id === currentTrack.id)
+        if (index === list.audio_tracks.length - 1) {
+            let track = list.audio_tracks[0]
             this.loadSong(list, track)
         } else {
-            let track = list.tracks[currentTrack.id]
+            let track = list.audio_tracks[index + 1]
             this.loadSong(list, track)
         }
     },
 
     playFromFirst() {
         this.resetState()
-        let track = list.tracks[0]
+        let track = list.audio_tracks[0]
         this.loadSong(list, track)
     },
 
