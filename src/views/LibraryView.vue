@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import SongRow from '../components/SongRow.vue'
+import VideoRow from '../components/VideoRow.vue'
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
@@ -117,6 +118,9 @@ loadData().then(() => {
         </div>
         <div class="border-b border-b-[#2A2A2A] mt-2"></div>
         <div class="mb-4"></div>
+        <ul class="w-full" v-for="track, index in artist.audio_tracks" :key="track">
+            <SongRow :artist="artist" :track="track" :index="++index"/>
+        </ul>
         <ul class="w-full" v-for="track, index in artist.audio_tracks" :key="track">
             <SongRow :artist="artist" :track="track" :index="++index"/>
         </ul>

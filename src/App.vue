@@ -224,6 +224,7 @@ const logout = async () => {
     @confirm="logout"
   />
 
+  <Suspense>
   <div
     class="fixed right-0 top-0 w-[calc(100%-70px)] md:w-[calc(100%-240px)] overflow-auto h-full bg-gradient-to-b from-[#1C1C1C] to-black"
   >
@@ -231,6 +232,7 @@ const logout = async () => {
     <RouterView />
     <div class="mb-[100px]"></div>
   </div>
+  </Suspense>
 
   <MusicPlayer v-if="currentTrack" />
 </template>

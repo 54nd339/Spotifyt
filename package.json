@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "firebase": "^9.20.0",
+    "instantsearch.css": "^8.0.0",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",
     "uniqolor": "^1.1.0",
     "vue": "^3.2.45",
+    "vue-instantsearch": "^4.9.0",
     "vue-material-design-icons": "^5.1.2",
     "vue-router": "^4.1.6"
   },

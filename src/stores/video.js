@@ -12,11 +12,11 @@ let list = {
     "name": "Diaries Of A Hero",
     "albumCover": "/images/albumCovers/DiariesOfAHero.png",
     "releaseYear": "2023",
-    "audio_tracks": podcasts.filter(podcast => podcast.type === 'audio'),
+    "video_index": podcasts.filter(podcast => podcast.type === 'audio'),
     "video_tracks": podcasts.filter(podcast => podcast.type === 'video')
 }
 
-export const useSongStore = defineStore('song', {
+export const useVideoStore = defineStore('song', {
   state: () => ({
     isPlaying: false,
     audio: null,
@@ -24,7 +24,7 @@ export const useSongStore = defineStore('song', {
     currentTrack: null,
   }),
   actions: {
-    loadSong(list, track) {
+    loadVideo(list, track) {
         this.currentList = list
         this.currentTrack = track
 
@@ -43,7 +43,7 @@ export const useSongStore = defineStore('song', {
         }, 200)
     },
 
-    playOrPauseSong() {
+    playOrPauseVideo() {
         if (this.audio.paused) {
             this.isPlaying = true
             this.audio.play()
@@ -53,36 +53,36 @@ export const useSongStore = defineStore('song', {
         }
     },
 
-    playOrPauseThisSong(list, track) {
+    playOrPauseThisVideo(list, track) {
         if (!this.audio || !this.audio.src || (this.currentTrack.id !== track.id)) {
-            this.loadSong(list, track)
+            this.loadVideo(list, track)
             return
         }
 
-        this.playOrPauseSong()
+        this.playOrPauseVideo()
     },
 
-    prevSong(currentTrack) {
-        let index = list.audio_tracks.findIndex(track => track.id === currentTrack.id)
-        let track = list.audio_tracks[index - 1]
-        this.loadSong(list, track)
+    prevVideo(currentTrack) {
+        let index = list.video_index.findIndex(track => track.id === currentTrack.id)
+        let track = list.video_index[index - 1]
+        this.loadVideo(list, track)
     },
 
-    nextSong(currentTrack) {
-        let index = list.audio_tracks.findIndex(track => track.id === currentTrack.id)
-        if (index === list.audio_tracks.length - 1) {
-            let track = list.audio_tracks[0]
-            this.loadSong(list, track)
+    nextVideo(currentTrack) {
+        let index = list.video_index.findIndex(track => track.id === currentTrack.id)
+        if (index === list.video_index.length - 1) {
+            let track = list.video_index[0]
+            this.loadVideo(list, track)
         } else {
-            let track = list.audio_tracks[index + 1]
-            this.loadSong(list, track)
+            let track = list.video_index[index + 1]
+            this.loadVideo(list, track)
         }
     },
 
     playFromFirst() {
         this.resetState()
-        let track = list.audio_tracks[0]
-        this.loadSong(list, track)
+        let track = list.video_index[0]
+        this.loadVideo(list, track)
     },
 
     resetState() {
