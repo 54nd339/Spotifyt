@@ -56,6 +56,14 @@ const setCurrentTrack = (item) => {
         </button>
 
         <div class="py-1.5"></div>
+        <ais-instant-search :search-client="searchClient" index-name="spotify_clone_songs">
+    <ais-search-box />
+    <ais-hits>
+      <template v-slot:item="{ item }">
+        <h2>{{ item.name }}</h2>
+      </template>
+    </ais-hits>
+  </ais-instant-search>
 
         <div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
             <CategorySelect category="Podcasts" image="https://picsum.photos/id/40/300/300"/>
