@@ -15,7 +15,7 @@ auth.onAuthStateChanged(user => {
   let currentPath = router.currentRoute.value.path
   if (user) {
     if (currentPath === '/login') {
-      history.go(-1)
+      router.push({name: 'Home'})
     }
   } else {
     if (currentPath !== '/login') {
