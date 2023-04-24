@@ -83,7 +83,6 @@ const logout = async () => {
 
 <template>
   <div>
-    <Suspense>
       <div
         id="TopNav"
         class="w-[calc(100%-70px)] md:w-[calc(100%-240px)] h-[60px] fixed right-0 z-20 bg-[#101010] bg-opacity-80 flex items-center justify-between"
@@ -136,6 +135,7 @@ const logout = async () => {
           </div>
         </button>
 
+        <Suspense>
         <span
           v-if="openMenu"
           class="fixed w-[190px] bg-[#282828] shadow-2xl z-50 rounded-sm top-[52px] right-[35px] p-1 cursor-pointer"
@@ -157,8 +157,8 @@ const logout = async () => {
             </li>
           </ul>
         </span>
+        </Suspense>
       </div>
-    </Suspense>
 
     <div
       id="SideNav"
@@ -168,6 +168,7 @@ const logout = async () => {
         <img class="md:w-[125px] md:flex" :src="logoImage" />
       </RouterLink>
       <div class="my-8"></div>
+      <Suspense>
       <ul>
         <RouterLink to="/">
           <MenuItem
@@ -211,29 +212,8 @@ const logout = async () => {
           pageUrl="/liked"
         />
       </ul>
+      </Suspense>
       <div class="border-b border-b-gray-700"></div>
-      <ul>
-        <li
-          class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white"
-        >
-          My Playlist #1
-        </li>
-        <li
-          class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white"
-        >
-          My Playlist #2
-        </li>
-        <li
-          class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white"
-        >
-          My Playlist #3
-        </li>
-        <li
-          class="font-semibold text-[13px] mt-3 text-gray-300 hover:text-white"
-        >
-          My Playlist #4
-        </li>
-      </ul>
     </div>
   </div>
 

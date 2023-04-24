@@ -1,11 +1,12 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import SongRow from '../components/SongRow.vue'
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 import Heart from 'vue-material-design-icons/Heart.vue';
 import ClockTimeThreeOutline from 'vue-material-design-icons/ClockTimeThreeOutline.vue';
-import artist from '../songList.json'
+// import artist from '../songList.json'
 
 import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
@@ -19,6 +20,38 @@ const playFunc = () => {
     } 
     useSong.playFromFirst()
 }
+
+import getCollection from '@/db/getCollection'
+const podcasts = ref([])
+const loadData = async () => {
+    await (await getCollection('podcasts'))
+    .getDocuments().then(res => {
+        podcasts.value = res
+        // filter ref
+    }).catch(err => {
+        console.log(err)
+    })
+}
+const artist = ref({
+    "name": "Diaries Of A Hero",
+    "albumCover": "/images/albumCovers/DiariesOfAHero.png",
+    "releaseYear": "0",
+    "audio_tracks": [],
+    "video_tracks": []
+})
+
+loadData().then(() => {
+    artist.value = {
+        "name": "Diaries Of A Hero",
+        "albumCover": "/images/albumCovers/DiariesOfAHero.png",
+        "releaseYear": "2023",
+        "audio_tracks": podcasts.value.filter(podcast => podcast.type === 'audio'),
+        "video_tracks": podcasts.value.filter(podcast => podcast.type === 'video')
+    }
+}).catch(err => {
+    console.log(err)
+})
+
 </script>
 
 <template>
@@ -51,7 +84,11 @@ const playFunc = () => {
                     </div>
                     <div class="ml-2 flex">
                         <div class="circle mt-2 mr-2" />
-                        <span class="-ml-0.5">{{ artist.tracks.length }} songs</span>
+                        <span class="-ml-0.5">{{ artist.audio_tracks.length }} songs</span>
+                    </div>
+                    <div class="ml-2 flex">
+                        <div class="circle mt-2 mr-2" />
+                        <span class="-ml-0.5">{{ artist.video_tracks.length }} videos</span>
                     </div>
                 </div>
 
@@ -80,7 +117,7 @@ const playFunc = () => {
         </div>
         <div class="border-b border-b-[#2A2A2A] mt-2"></div>
         <div class="mb-4"></div>
-        <ul class="w-full" v-for="track, index in artist.tracks" :key="track">
+        <ul class="w-full" v-for="track, index in artist.audio_tracks" :key="track">
             <SongRow :artist="artist" :track="track" :index="++index"/>
         </ul>
     </div>
