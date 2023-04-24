@@ -11,12 +11,20 @@ import useAuth from "@/db/useAuth"
 
 import { useSongStore } from "./stores/song";
 import { storeToRefs } from "pinia";
+import algoliasearch from 'algoliasearch/lite';
+  import 'instantsearch.css/themes/satellite-min.css';
+  const searchClient = algoliasearch(
+        'ANI8PD12T5',
+        '41e5338b054f039121a1db34f0edc4b9'
+    )
 const useSong = useSongStore();
 const { isPlaying, currentTrack } = storeToRefs(useSong);
 
 const user = ref(auth.currentUser);
 const username = ref("");
 const uid = ref("");
+
+
 
 auth.onAuthStateChanged((param) => {
   user.value = param;
@@ -66,9 +74,20 @@ const logout = async() => {
     showConfirmModal.value = false;
   });
 }
+
 </script>
 
 <template>
+  <template>
+        <ais-instant-search :search-client="searchClient" index-name="spotify_clone_songs">
+            <ais-search-box />
+            <ais-hits>
+                <template v-slot:item="{ item }">
+                    <h2>{{ item.name }}</h2>
+                </template>
+            </ais-hits>
+        </ais-instant-search>
+    </template>
   <div>
     <Suspense>
     <div
